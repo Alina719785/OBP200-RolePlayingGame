@@ -6,9 +6,7 @@ namespace OBP200_RolePlayingGame;
 class Program
 {
     // ======= Globalt tillstånd  =======
-
-    // Spelarens "databas": alla värden som strängar
-    // index: 0 Name, 1 Class, 2 HP, 3 MaxHP, 4 ATK, 5 DEF, 6 GOLD, 7 XP, 8 LEVEL, 9 POTIONS, 10 INVENTORY (semicolon-sep)
+    
     static Player player;
 
     // Rum: [type, label]
@@ -202,18 +200,18 @@ class Program
 
     static bool DoBattle(bool isBoss)
     {
-        var enemy = GenerateEnemy(isBoss);
-        Console.WriteLine($"En {enemy[1]} dyker upp! (HP {enemy[2]}, ATK {enemy[3]}, DEF {enemy[4]})");
+        Enemy enemy = GenerateEnemy(isBoss);
+        Console.WriteLine($"En {enemy.Name} dyker upp! (HP {enemy.HP}, ATK {enemy.ATK}, DEF {enemy.DEF})");
 
-        int enemyHp = ParseInt(enemy[2], 10);
-        int enemyAtk = ParseInt(enemy[3], 3);
-        int enemyDef = ParseInt(enemy[4], 0);
+        int enemyHp = enemy.HP;
+        int enemyAtk = enemy.Attack();
+        int enemyDef = enemy.DEF;
 
         while (enemyHp > 0 && !player.IsPlayerDead())
         {
             Console.WriteLine();
             player.ShowStatus();
-            Console.WriteLine($"Fiende: {enemy[1]} HP={enemyHp}");
+            Console.WriteLine($"Fiende: {enemy.Name} HP={enemyHp}");
             Console.WriteLine("[A] Attack   [X] Special   [P] Dryck   [R] Fly");
             if (isBoss) Console.WriteLine("(Du kan inte fly från en boss!)");
             Console.Write("Val: ");
@@ -224,13 +222,13 @@ class Program
             {
                 int damage = CalculatePlayerDamage(enemyDef);
                 enemyHp -= damage;
-                Console.WriteLine($"Du slog {enemy[1]} för {damage} skada.");
+                Console.WriteLine($"Du slog {enemy.Name} för {damage} skada.");
             }
             else if (cmd == "X")
             {
                 int special = UseClassSpecial(enemyDef, isBoss);
                 enemyHp -= special;
-                Console.WriteLine($"Special! {enemy[1]} tar {special} skada.");
+                Console.WriteLine($"Special! {enemy.Name} tar {special} skada.");
             }
             else if (cmd == "P")
             {
@@ -258,7 +256,7 @@ class Program
             // Fiendens tur
             int enemyDamage = CalculateEnemyDamage(enemyAtk);
             player.ApplyDamageToPlayer(enemyDamage);
-            Console.WriteLine($"{enemy[1]} anfaller och gör {enemyDamage} skada!");
+            Console.WriteLine($"{enemy.Name} anfaller och gör {enemyDamage} skada!");
         }
 
         if (player.IsPlayerDead())
@@ -267,24 +265,31 @@ class Program
         }
 
         // Vinstrapporter, XP, guld, loot
-        int xpReward = ParseInt(enemy[5], 5);
-        int goldReward = ParseInt(enemy[6], 3);
+        int xpReward = enemy.XPReward;
+        int goldReward = enemy.GoldReward;
 
         player.AddPlayerXp(xpReward);
         player.AddPlayerGold(goldReward);
 
         Console.WriteLine($"Seger! +{xpReward} XP, +{goldReward} guld.");
-        MaybeDropLoot(enemy[1]);
+        MaybeDropLoot(enemy.Name);
 
         return true;
     }
 
-    static string[] GenerateEnemy(bool isBoss)
+    static Enemy GenerateEnemy(bool isBoss)
     {
         if (isBoss)
         {
-            // Boss-mall
-            return new[] { "boss", "Urdraken", "55", "9", "4", "30", "50" };
+            return new Boss
+            {
+                Name = "Urdraken",
+                HP = 55,
+                ATK = 9,
+                DEF = 4,
+                XPReward = 30,
+                GoldReward = 50
+            };
         }
         else
         {
@@ -297,7 +302,15 @@ class Program
             int def = ParseInt(template[4], 0) + Rng.Next(0, 2);
             int xp = ParseInt(template[5], 4) + Rng.Next(0, 3);
             int gold = ParseInt(template[6], 2) + Rng.Next(0, 3);
-            return new[] { template[0], template[1], hp.ToString(), atk.ToString(), def.ToString(), xp.ToString(), gold.ToString() };
+            return new Enemy
+            {
+                Name = template[1],
+                HP = hp,
+                ATK = atk,
+                DEF = def,
+                XPReward = xp,
+                GoldReward = gold
+            };
         }
     }
 
@@ -518,7 +531,6 @@ class Program
 
     static void SellMinorGems()
     {
-        var inv = player.Inventory;
         if (player.Inventory.Count == 0)
         {
             Console.WriteLine("Du har inga föremål att sälja.");
