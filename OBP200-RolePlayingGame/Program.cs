@@ -128,7 +128,7 @@ class Program
         CurrentRoomIndex = 0;
 
         Console.WriteLine($"Välkommen, {name} the {cls}!");
-        ShowStatus();
+        player.ShowStatus();
     }
 
     static void RunGameLoop()
@@ -140,7 +140,7 @@ class Program
 
             bool continueAdventure = EnterRoom(room[0]);
             
-            if (IsPlayerDead())
+            if (player.IsPlayerDead())
             {
                 Console.WriteLine("Du har stupat... Spelet över.");
                 break;
@@ -209,10 +209,10 @@ class Program
         int enemyAtk = ParseInt(enemy[3], 3);
         int enemyDef = ParseInt(enemy[4], 0);
 
-        while (enemyHp > 0 && !IsPlayerDead())
+        while (enemyHp > 0 && !player.IsPlayerDead())
         {
             Console.WriteLine();
-            ShowStatus();
+            player.ShowStatus();
             Console.WriteLine($"Fiende: {enemy[1]} HP={enemyHp}");
             Console.WriteLine("[A] Attack   [X] Special   [P] Dryck   [R] Fly");
             if (isBoss) Console.WriteLine("(Du kan inte fly från en boss!)");
@@ -234,7 +234,7 @@ class Program
             }
             else if (cmd == "P")
             {
-                UsePotion();
+                player.UsePotion();
             }
             else if (cmd == "R" && !isBoss)
             {
@@ -257,11 +257,11 @@ class Program
 
             // Fiendens tur
             int enemyDamage = CalculateEnemyDamage(enemyAtk);
-            ApplyDamageToPlayer(enemyDamage);
+            player.ApplyDamageToPlayer(enemyDamage);
             Console.WriteLine($"{enemy[1]} anfaller och gör {enemyDamage} skada!");
         }
 
-        if (IsPlayerDead())
+        if (player.IsPlayerDead())
         {
             return false; // avsluta äventyr
         }
@@ -270,8 +270,8 @@ class Program
         int xpReward = ParseInt(enemy[5], 5);
         int goldReward = ParseInt(enemy[6], 3);
 
-        AddPlayerXp(xpReward);
-        AddPlayerGold(goldReward);
+        player.AddPlayerXp(xpReward);
+        player.AddPlayerGold(goldReward);
 
         Console.WriteLine($"Seger! +{xpReward} XP, +{goldReward} guld.");
         MaybeDropLoot(enemy[1]);
@@ -350,7 +350,7 @@ class Program
             Console.WriteLine("Warrior använder Heavy Strike!");
             int atk = player.ATK;
             specialDmg = Math.Max(2, atk + 3 - enemyDef);
-            ApplyDamageToPlayer(2); // självskada
+            player.ApplyDamageToPlayer(2); // självskada
         }
         else if (cls == "Mage")
         {
@@ -445,7 +445,7 @@ class Program
         if (Rng.NextDouble() < 0.5)
         {
             int gold = Rng.Next(8, 15);
-            AddPlayerGold(gold);
+            player.AddPlayerGold(gold);
             Console.WriteLine($"Kistan innehåller {gold} guld!");
         }
         else
@@ -519,13 +519,13 @@ class Program
     static void SellMinorGems()
     {
         var inv = player.Inventory;
-        if (string.IsNullOrWhiteSpace(inv))
+        if (player.Inventory.Count == 0)
         {
             Console.WriteLine("Du har inga föremål att sälja.");
             return;
         }
 
-        var items = inv.Split(';').Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
+        var items = player.Inventory;
         int count = items.Count(x => x == "Minor Gem");
         if (count == 0)
         {
@@ -536,7 +536,7 @@ class Program
         items = items.Where(x => x != "Minor Gem").ToList();
         player.Inventory = items;
 
-        AddPlayerGold(count * 5);
+        player.AddPlayerGold(count * 5);
         Console.WriteLine($"Du säljer {count} st Minor Gem för {count * 5} guld.");
     }
 
