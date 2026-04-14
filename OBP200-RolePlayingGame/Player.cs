@@ -4,15 +4,15 @@ public class Player
 {
         public string Name { get; set; }
         public string Class { get; set; }
-        public int HP { get; set; }
-        public int MaxHP { get; set; }
-        public int ATK { get; set; }
-        public int DEF { get; set; }
-        public int Gold { get; set; }
-        public int XP { get; set; }
-        public int Level { get; set; }
-        public int Potions { get; set; }
-        public List<string> Inventory { get; set; } = new List<string>();
+        public int HP { get; private set; }
+        public int MaxHP { get; private set; }
+        public int ATK { get; private set; }
+        public int DEF { get; private set; }
+        public int Gold { get; private set; }
+        public int XP { get; private set; }
+        public int Level { get; private set; }
+        public int Potions { get; private set; }
+        public List<string> Inventory { get; private set; }
 
        
         public bool IsPlayerDead()
