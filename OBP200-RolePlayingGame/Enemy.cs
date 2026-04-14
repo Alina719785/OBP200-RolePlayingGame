@@ -2,12 +2,12 @@
 
 public class Enemy
 {
-    public string Name { get; set; }
-    public int HP { get; set; }
-    public int ATK { get; set; }
-    public int DEF { get; set; }
-    public int XPReward { get; set; }
-    public int GoldReward { get; set; }
+    public string Name { get; protected set; }
+    public int HP { get; protected set; }
+    public int ATK { get; protected set; }
+    public int DEF { get; protected set; }
+    public int XPReward { get; protected set; }
+    public int GoldReward { get; protected set; }
     
     public Enemy(string name, int hp, int atk, int def, int xp, int gold)
     {
