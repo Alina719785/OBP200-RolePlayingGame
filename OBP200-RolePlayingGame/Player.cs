@@ -100,5 +100,25 @@ public class Player
             Gold -= amount;
             return true;
         }
+        
+        public void AddPotion(int amount)
+        {
+            Potions += amount;
+        }
+
+        public void IncreaseATK(int amount)
+        {
+            ATK += amount;
+        }
+
+        public void IncreaseDEF(int amount)
+        {
+            DEF += amount;
+        }
+
+        public void HealToMax()
+        {
+            HP = MaxHP;
+        }
 }
 
