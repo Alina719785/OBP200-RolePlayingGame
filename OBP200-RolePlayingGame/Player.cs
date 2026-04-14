@@ -48,7 +48,6 @@ public class Player
         {
             Gold += Math.Max(0, amount);
         }
-
       
         public void AddPlayerXp(int amount)
         {
@@ -93,6 +92,13 @@ public class Player
             {
                 Console.WriteLine("Väska: " + string.Join(", ", Inventory));
             }
+        }
+        
+        public bool SpendGold(int amount)
+        {
+            if (Gold < amount) return false;
+            Gold -= amount;
+            return true;
         }
 }
 

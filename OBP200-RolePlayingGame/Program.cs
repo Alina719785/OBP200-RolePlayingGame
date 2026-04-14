@@ -516,10 +516,8 @@ class Program
 
     static void TryBuy(int cost, Action apply, string successMsg)
     {
-        int gold = player.Gold;
-        if (gold >= cost)
+        if (player.SpendGold(cost))
         {
-            player.Gold -= cost;
             apply();
             Console.WriteLine(successMsg);
         }
