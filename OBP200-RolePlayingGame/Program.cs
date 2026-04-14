@@ -98,20 +98,17 @@ class Program
         }
 
         // Fyll player-array
-        player = new Player
-        {
-            Name = name,
-            Class = cls,
-            HP = hp,
-            MaxHP = maxhp,
-            ATK = atk,
-            DEF = def,
-            Gold = gold,
-            XP = 0,
-            Level = 1,
-            Potions = potions,
-            Inventory = new List<string> { "Wooden Sword", "Cloth Armor" }
-        };
+        player = new Player(
+            name,
+            cls,
+            hp,
+            maxhp,
+            atk,
+            def,
+            gold,
+            potions,
+            new List<string> { "Wooden Sword", "Cloth Armor" }
+        );
 
         // Initiera karta (linjärt äventyr)
         Rooms.Clear();
@@ -281,15 +278,7 @@ class Program
     {
         if (isBoss)
         {
-            return new Boss
-            {
-                Name = "Urdraken",
-                HP = 55,
-                ATK = 9,
-                DEF = 4,
-                XPReward = 30,
-                GoldReward = 50
-            };
+            return new Boss("Urdraken", 55, 9, 4, 30, 50);
         }
         else
         {
@@ -302,15 +291,7 @@ class Program
             int def = ParseInt(template[4], 0) + Rng.Next(0, 2);
             int xp = ParseInt(template[5], 4) + Rng.Next(0, 3);
             int gold = ParseInt(template[6], 2) + Rng.Next(0, 3);
-            return new Enemy
-            {
-                Name = template[1],
-                HP = hp,
-                ATK = atk,
-                DEF = def,
-                XPReward = xp,
-                GoldReward = gold
-            };
+            return new Enemy(template[1], hp, atk, def, xp, gold);
         }
     }
 
@@ -372,7 +353,7 @@ class Program
             if (gold >= 3)
             {
                 Console.WriteLine("Mage kastar Fireball!");
-                player.Gold -= 3;
+                player.SpendGold(3);
                 int atk = player.ATK;
                 specialDmg = Math.Max(3, atk + 5 - (enemyDef / 2));
             }
@@ -544,7 +525,8 @@ class Program
         }
 
         items = items.Where(x => x != "Minor Gem").ToList();
-        player.Inventory = items;
+        player.Inventory.Clear();
+        player.Inventory.AddRange(items);
 
         player.AddPlayerGold(count * 5);
         Console.WriteLine($"Du säljer {count} st Minor Gem för {count * 5} guld.");
