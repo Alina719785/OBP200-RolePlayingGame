@@ -14,7 +14,21 @@ public class Player
         public int Potions { get; private set; }
         public List<string> Inventory { get; private set; }
 
-       
+        public Player(string name, string cls, int hp, int maxhp, int atk, int def, int gold, int potions, List<string> inventory)
+        {
+            Name = name;
+            Class = cls;
+            HP = hp;
+            MaxHP = maxhp;
+            ATK = atk;
+            DEF = def;
+            Gold = gold;
+            Potions = potions;
+            Inventory = inventory;
+            XP = 0;
+            Level = 1;
+        }
+        
         public bool IsPlayerDead()
         {
             return HP <= 0;
