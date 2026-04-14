@@ -487,15 +487,15 @@ class Program
 
             if (val == "1")
             {
-                TryBuy(10, () => player.Potions += 1, "Du köper en dryck.");
+                TryBuy(10, () => player.AddPotion(1), "Du köper en dryck.");
             }
             else if (val == "2")
             {
-                TryBuy(25, () => player.ATK += 2, "Du köper ett bättre vapen.");
+                TryBuy(25, () => player.IncreaseATK(2), "Du köper ett bättre vapen.");
             }
             else if (val == "3")
             {
-                TryBuy(25, () => player.DEF += 2, "Du köper bättre rustning.");
+                TryBuy(25, () => player.IncreaseDEF(2), "Du köper bättre rustning.");
             }
             else if (val == "4")
             {
